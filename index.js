@@ -3,8 +3,6 @@ function getRandomNumber() {
     return `Random number is ${random}`
 };
 
-if (require.main === module) {
-    console.log(getRandomNumber());
-}
+console.log(getRandomNumber());
 
 module.exports = getRandomNumber;
