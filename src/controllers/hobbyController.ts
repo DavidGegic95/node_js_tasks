@@ -1,4 +1,3 @@
-// src/controllers/hobbyController.ts
 import { hobbyService } from '../services/hobbyService';
 import { httpStatusCodes } from '../utils/httpsStatusCodes';
 
@@ -77,7 +76,10 @@ const hobbyController = {
         const hobbies = hobbyService.getHobbies(id)
 
         if (hobbies) {
-            res.writeHead(httpStatusCodes.OK, { 'Content-Type': 'application/json' })
+            res.writeHead(httpStatusCodes.OK, {
+                'Content-Type': 'application/json',
+                'Cache-Control': 'max-age=3600, public',
+            });
             res.end(JSON.stringify({ id: id, hobbies: hobbies }))
         } else {
             res.writeHead(httpStatusCodes.NOT_FOUND, { 'Content-Type': 'application/json' })

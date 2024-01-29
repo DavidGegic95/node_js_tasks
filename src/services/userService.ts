@@ -1,8 +1,13 @@
-import { UserInterface, users, UserUpdate } from "../data";
+import {  users, UserUpdate } from "../data";
+import { hasAllRequiredProperties } from "../helpers/requiredPropertiesUser";
 
 
 export const userService = {
     createUser: (user: any) => {
+        const requiredProperties = ['id', 'username', 'email']
+        if (!hasAllRequiredProperties(user, requiredProperties)) {
+            return null
+        }
         const alreadyExist = users.some((u) => u.email === user.email)
         if (!alreadyExist) {
             users.push(user)

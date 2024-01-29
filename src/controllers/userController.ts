@@ -26,7 +26,7 @@ export const userController = {
                         res.end(JSON.stringify(users));
                     } else {
                         res.writeHead(httpStatusCodes.CONFLICT, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ message: 'User already exist.' }));
+                        res.end(JSON.stringify({ message: 'User already exist or invalid input data' }));
                     }
                 } catch (error) {
                     console.error('Error parsing JSON:', error);
@@ -65,11 +65,12 @@ export const userController = {
 
 
         const user = userService.getUser(id)
+        const link = { href: `http://localhost:3000/api/hobbies/${id}`, method: 'GET', rel: 'hobbies' }
 
 
         if (user) {
             res.writeHead(httpStatusCodes.OK, { 'Content-Type': 'application/json' })
-            res.end(JSON.stringify(user))
+            res.end(JSON.stringify({ name: user.name, email: user.email, id: user.id, hobbies: link }))
         } else {
             res.writeHead(httpStatusCodes.NOT_FOUND, { 'Content-Type': 'application/json' })
             res.end(JSON.stringify({ message: "User not found" }))
