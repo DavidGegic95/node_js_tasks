@@ -1,5 +1,5 @@
 function getRandomNumber() {
-    let random = Math.floor(Math.random() * 100)
+    let random = Math.floor(Math.random() * 1000) + 1
     return `Random number is ${random}`
 };
 
