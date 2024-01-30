@@ -2,9 +2,10 @@
   "name": "node_js_tasks",
   "version": "1.0.0",
   "description": "Node.js tasks",
-  "main": "index.js",
   "scripts": {
-    "start": "nodemon task3__3.js",
+    "task1": "node task1",
+    "task2": "node task2",
+    "task3": "node task3",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
