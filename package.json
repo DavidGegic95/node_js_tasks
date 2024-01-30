@@ -1,0 +1,26 @@
+{
+  "name": "node_js_tasks",
+  "version": "1.0.0",
+  "description": "Node.js tasks",
+  "main": "server.js",
+  "scripts": {
+    "start": "pm2 start  src/server.ts --interpreter ts-node --name node_js_tasks",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "stop": "./node_modules/.bin/pm2 stop node_js_tasks"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^3.0.3",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.9",
+    "@types/uuid": "^9.0.8",
+    "pm2": "^5.3.1",
+    "prettier": "3.2.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
