@@ -11,33 +11,23 @@ import {
   mocked_FR24,
 } from "./mockedData";
 
-jest.mock("axios");
-describe("Public holidays service unit tests", () => {
-  it("Get list of public holidays", async () => {
-    (axios.get as jest.MockedFunction<typeof axios.get>).mockResolvedValue({
-      data: mockedPublicHolidays,
-    });
+describe("Public holidays service integration tests", () => {
+  it("Get list of public holidays integration test", async () => {
     const result = await getListOfPublicHolidays(2024, "FR");
-    const mockedResult: any = mockedPublicHolidays.map((holiday) =>
+    const mockedResult = mocked_FR24.map((holiday) =>
       shortenPublicHoliday(holiday)
     );
+
     expect(result).toEqual(mockedResult);
   });
 
-  it("Check if today is public holiday", async () => {
-    (axios.get as jest.MockedFunction<typeof axios.get>).mockResolvedValue({
-      status: 200,
-    });
+  it("Check if today is public holiday integration test", async () => {
     const result = await checkIfTodayIsPublicHoliday("FR");
 
-    expect(result).toEqual(true);
+    expect(result).toEqual(false);
   });
 
-  it("Get next public holidays", async () => {
-    (axios.get as jest.MockedFunction<typeof axios.get>).mockResolvedValue({
-      data: mockedNextPublicHoliday,
-    });
-
+  it("Get next public holidays integration test", async () => {
     const result = await getNextPublicHolidays("GB");
     const mockedResult = mockedNextPublicHoliday.map((holiday) =>
       shortenPublicHoliday(holiday)
@@ -46,4 +36,3 @@ describe("Public holidays service unit tests", () => {
     expect(result).toEqual(mockedResult);
   });
 });
-

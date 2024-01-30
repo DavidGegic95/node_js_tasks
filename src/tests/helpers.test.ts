@@ -11,7 +11,7 @@ describe("Helpers unit test", () => {
   it("Validate inout error check 20-21", () => {
     try {
       validateInput({ year: 2024, country: "QQ" });
-      fail("Expected an error to be thrown for non-current year");
+      fail("Expected an error to be thrown for non-supported country");
     } catch (error: any) {
       expect(error.message).toEqual(
         `Country provided is not supported, received: QQ`
