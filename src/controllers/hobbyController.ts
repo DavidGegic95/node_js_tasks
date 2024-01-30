@@ -54,7 +54,7 @@ const hobbyController = {
     if (user) {
       res.writeHead(httpStatusCodes.OK, {
         'Content-Type': 'application/json',
-        'Cache-Control': 'max-age=3600, public',
+        'Cache-Control': 'max-age=3600, private',
       })
       res.end(JSON.stringify(resBodyHobbies(user)))
     } else {

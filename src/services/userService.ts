@@ -1,13 +1,12 @@
-import { UserInterface, users } from '../data'
+import { users } from '../data'
 import { hasAllRequiredProperties } from '../helpers/requiredPropertiesUser'
-const { v4: uuidv4 } = require('uuid')
+import { v4 as uuidv4 } from 'uuid'
 
 export const userService = {
   createUser: (user: any) => {
     const requiredProperties = ['name', 'email']
-    if (!hasAllRequiredProperties(user, requiredProperties)) {
-      return null
-    }
+    if (!hasAllRequiredProperties(user, requiredProperties)) return null
+
     const alreadyExist = users.some(u => u.email === user.email)
     if (!alreadyExist) {
       const createdUser = {
@@ -40,25 +39,5 @@ export const userService = {
     } else {
       return null
     }
-  },
-  getUser: (userId: string) => {
-    let user = users.find(u => u.id === userId)
-
-    if (user) return user
-
-    return null
-  },
-  updateUser: (userId: string, data: UserInterface) => {
-    let user = users.find(u => u.id === userId)
-
-    if (user && data) {
-      for (let key in data) {
-        if (data.hasOwnProperty(key)) {
-          ;(user as any)[key] = (data as any)[key]
-        }
-      }
-      return user
-    }
-    return null
   },
 }

@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.9",
+    "@types/uuid": "^9.0.8",
     "pm2": "^5.3.1",
     "prettier": "3.2.4",
     "ts-node": "^10.9.2",
