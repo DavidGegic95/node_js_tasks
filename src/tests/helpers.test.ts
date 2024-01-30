@@ -1,4 +1,5 @@
-import { validateInput } from "../helpers";
+import { shortenPublicHoliday, validateInput } from "../helpers";
+import { mockedPublicHolidays } from "../services/test/mockedData";
 
 describe("Helpers unit test", () => {
   it("Validate Input", () => {
@@ -30,13 +31,12 @@ describe("Helpers unit test", () => {
   });
 
   it("Shorten Public Holiday", () => {
-    try {
-      validateInput({ year: 2023, country: "FR" });
-      fail("Expected an error to be thrown for non-current year");
-    } catch (error: any) {
-      expect(error.message).toEqual(
-        `Year provided not the current, received: ${2023}`
-      );
-    }
+    const holiday = mockedPublicHolidays[0];
+    const result = shortenPublicHoliday(holiday);
+    expect(result).toEqual({
+      name: holiday.name,
+      localName: holiday.localName,
+      date: holiday.date,
+    });
   });
 });
