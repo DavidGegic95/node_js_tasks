@@ -1,0 +1,28 @@
+{
+  "name": "node_js_tasks",
+  "version": "1.0.0",
+  "description": "Node.js tasks",
+  "main": "public-holidays.service.ts",
+  "scripts": {
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "e2e": "jest end2end.test.ts",
+    "test:e2e": "npm run e2e",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/supertest": "^6.0.2",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "axios": "^1.6.7"
+  }
+}
