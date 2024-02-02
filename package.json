@@ -2,11 +2,13 @@
   "name": "node_js_tasks",
   "version": "1.0.0",
   "description": "Node.js tasks",
-  "main": "index.js",
+  "main": "public-holidays.service.ts",
   "scripts": {
     "test": "jest",
-    "test:coverage": "jest --coverage",
-    "test:e2e": "jest end2end.test.ts"
+    "coverage": "jest --coverage",
+    "e2e": "jest end2end.test.ts",
+    "test:e2e": "npm run e2e",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "",
