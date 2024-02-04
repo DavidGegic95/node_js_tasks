@@ -6,8 +6,34 @@ const cartRouter = Router();
 
 cartRouter.get("/api/profile/cart", async (req: Request, res: Response) => {
   try {
-    const cart = await cartService.getCart();
+    const { userId } = req.body;
+    const cart = await cartService.getCart(userId);
+
     res.status(200).json(cart);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+cartRouter.delete("/api/profile/cart", async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.body;
+    const body = await cartService.deleteById(userId);
+    res.status(200).json(body);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+cartRouter.put("/api/profile/cart", async (req: Request, res: Response) => {
+  try {
+    const productInfo = req.body;
+    const body = await cartService.updateCart(productInfo);
+
+    console.log(body);
+    res.status(200).json(body);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
