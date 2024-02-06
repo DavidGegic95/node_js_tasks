@@ -30,9 +30,9 @@ cartRouter.delete("/api/profile/cart", async (req: Request, res: Response) => {
 cartRouter.put("/api/profile/cart", async (req: Request, res: Response) => {
   try {
     const productInfo = req.body;
-    const body = await cartService.updateCart(productInfo);
+    const headers = req.headers;
+    const body = await cartService.updateCart(productInfo, headers);
 
-    console.log(body);
     res.status(200).json(body);
   } catch (error) {
     console.error(error);

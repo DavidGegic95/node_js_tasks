@@ -45,8 +45,8 @@ const deleteById = async (cartId: string) => {
   return body;
 };
 
-const updateCart = async (productInfo: any) => {
-  const body = await cartRepository.updateCart(productInfo);
+const updateCart = async (productInfo: any, headers: any) => {
+  const body = await cartRepository.updateCart(productInfo,headers);
 };
 
 export const cartService = {
