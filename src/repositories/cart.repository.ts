@@ -1,4 +1,3 @@
-import { count } from "console";
 import * as fs from "fs";
 import * as path from "path";
 import { CartType } from "../utils/types/cart.type";
@@ -41,24 +40,28 @@ const updateCart = async (productInfo: any, headers: any) => {
   const allCarts = await getCartsFromFile();
   let cartIndex = allCarts.findIndex((cart: CartType) => cart.id === userId);
   const allProducts = await getProductsFromFile();
-  let productIndex = allProducts.findIndex(
+  let productIndexinProducts = allProducts.findIndex(
     (product: ProductType) => product.id === productId
   );
-  // console.log(productIndex);
-  // console.log(cartIndex);
-  // console.log(allCarts);
 
   if (cartIndex !== -1 && allCarts[cartIndex].items.length !== 0) {
     const productIndex = allCarts[cartIndex].items.findIndex(
       (p: any) => p.product.id === productId
     );
     if (productIndex !== -1) {
-      allCarts[cartIndex].items.push({
-        products: allProducts[productIndex],
-        count: 999,
+      console.log(productIndex, "product index");
+      allCarts[cartIndex].items.splice(productIndex, 1, {
+        products: allProducts[productIndexinProducts],
+        count: count,
       });
+      writeDataToFile(allCarts);
+    } else {
+      allCarts[cartIndex].items.push({
+        products: allProducts[productIndexinProducts],
+        count: count,
+      });
+      writeDataToFile(allCarts);
     }
-    // console.log(allCarts[0]);
     console.log(allCarts[cartIndex].items);
   }
 };
