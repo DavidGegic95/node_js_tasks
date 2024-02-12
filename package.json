@@ -4,7 +4,7 @@
   "description": "Node.js tasks",
   "main": "app.ts",
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "nodemon src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

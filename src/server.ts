@@ -1,11 +1,13 @@
-import router from "./controllers/product.controller";
 import cartRouter from "./controllers/cart.controller";
+import { authMiddleware } from "./authMiddleware/authMiddleware";
+import productRouter from "./controllers/product.controller";
 const express = require("express");
 const PORT = 8000;
 const app = express();
 
 app.use(express.json());
-app.use(router);
+app.use(authMiddleware);
+app.use(productRouter);
 app.use(cartRouter);
 
 app.listen(PORT, () => {

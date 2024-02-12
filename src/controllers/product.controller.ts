@@ -1,11 +1,10 @@
 import express, { Request, Response } from "express";
-import * as Joi from "joi";
 import { productService } from "../services/product.service";
 import { Router } from "express";
 
-const router = Router();
+const productRouter = Router();
 
-router.get("/api/products", async (req: Request, res: Response) => {
+productRouter.get("/api/products", async (req: Request, res: Response) => {
   try {
     const products = await productService.getAll();
     res.status(200).json(products);
@@ -15,20 +14,30 @@ router.get("/api/products", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/api/products/:productId", async (req: Request, res: Response) => {
-  try {
-    const productId = req.params.productId;
-    const product = await productService.getById(productId);
+productRouter.get(
+  "/api/products/:productId",
+  async (req: Request, res: Response) => {
+    try {
+      const productId = req.params.productId;
+      const product = await productService.getById(productId);
 
-    if (!product) {
-      return res.status(404).json({ error: "Product not found" });
+      if (!product) {
+        return res.status(404).json({
+          data: null,
+          error: {
+            message: "No product with such id",
+          },
+        });
+      }
+      res.status(200).json({
+        data: product,
+        error: null,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
-
-    res.status(200).json(product);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
   }
-});
+);
 
-export default router;
+export default productRouter;

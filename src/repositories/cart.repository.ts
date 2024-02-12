@@ -1,5 +1,10 @@
 import * as fs from "fs";
 import * as path from "path";
+import { cartUpdateBody } from "../utils/heplers/cartUpdateBody";
+import {
+  invalidCartResponse,
+  invalidProductReponse,
+} from "../utils/responseMessages/responses";
 import { CartType } from "../utils/types/cart.type";
 import { ProductType } from "../utils/types/product.type";
 
@@ -18,7 +23,9 @@ const getCart = async (userId: string) => {
 };
 
 const createCart = async (cartData: CartType) => {
-  const cart = await writeDataToFile([cartData]);
+  const allCarts = await getCartsFromFile();
+  allCarts.push(cartData);
+  writeDataToFile(allCarts);
   return cartData;
 };
 
@@ -35,35 +42,38 @@ const deleteById = async (cartId: string) => {
   }
 };
 const updateCart = async (productInfo: any, headers: any) => {
-  const userId = headers?.userid;
+  const userId = headers["x-user-id"];
   const { productId, count } = productInfo;
+
   const allCarts = await getCartsFromFile();
   let cartIndex = allCarts.findIndex((cart: CartType) => cart.id === userId);
+  if (cartIndex === -1) return invalidCartResponse;
+
   const allProducts = await getProductsFromFile();
   let productIndexinProducts = allProducts.findIndex(
     (product: ProductType) => product.id === productId
   );
+  if (productIndexinProducts === -1) return invalidProductReponse;
 
-  if (cartIndex !== -1 && allCarts[cartIndex].items.length !== 0) {
-    const productIndex = allCarts[cartIndex].items.findIndex(
-      (p: any) => p.product.id === productId
-    );
-    if (productIndex !== -1) {
-      console.log(productIndex, "product index");
-      allCarts[cartIndex].items.splice(productIndex, 1, {
-        products: allProducts[productIndexinProducts],
-        count: count,
-      });
-      writeDataToFile(allCarts);
-    } else {
-      allCarts[cartIndex].items.push({
-        products: allProducts[productIndexinProducts],
-        count: count,
-      });
-      writeDataToFile(allCarts);
-    }
-    console.log(allCarts[cartIndex].items);
+  const productIndex = allCarts[cartIndex].items.findIndex(
+    (p: any) => p.product.id === productId
+  );
+  if (productIndex !== -1) {
+    allCarts[cartIndex].items.splice(productIndex, 1, {
+      product: allProducts[productIndexinProducts],
+      count: count,
+    });
+    await writeDataToFile(allCarts);
+  } else {
+    allCarts[cartIndex].items.push({
+      product: allProducts[productIndexinProducts],
+      count: count,
+    });
+    await writeDataToFile(allCarts);
+    return allCarts[cartIndex];
   }
+
+  return { status: 200, body: cartUpdateBody(allCarts[cartIndex]) };
 };
 
 const writeDataToFile = async (cartData: CartType[]) => {

@@ -1,23 +1,15 @@
 import express, { Request, Response } from "express";
 import { Router } from "express";
 import { cartService } from "../services/cart.service";
+import { validateRequestBody } from "../utils/heplers/joiValidator";
 
 const cartRouter = Router();
 
 cartRouter.get("/api/profile/cart", async (req: Request, res: Response) => {
   try {
-    const userid = req.headers.userid;
-    if (typeof userid === "string" && userid.length > 0) {
-      const cart = await cartService.getCart(userid);
-      res.status(200).json(cart);
-    } else {
-      res.status(403).json({
-        data: null,
-        error: {
-          message: "You must be authorized user",
-        },
-      });
-    }
+    const headers = req.headers;
+    const cart = await cartService.getCart(headers);
+    res.status(200).json(cart);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -26,36 +18,38 @@ cartRouter.get("/api/profile/cart", async (req: Request, res: Response) => {
 
 cartRouter.delete("/api/profile/cart", async (req: Request, res: Response) => {
   try {
-    const { userId } = req.body;
-    const body = await cartService.deleteById(userId);
-    res.status(200).json(body);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-cartRouter.put("/api/profile/cart", async (req: Request, res: Response) => {
-  try {
-    const productInfo = req.body;
     const headers = req.headers;
-    const body = await cartService.updateCart(productInfo, headers);
-
+    const body = await cartService.deleteById(headers);
     res.status(200).json(body);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+cartRouter.put(
+  "/api/profile/cart",
+  validateRequestBody,
+  async (req: Request, res: Response) => {
+    try {
+      const productInfo = req.body;
+      const headers = req.headers;
+      const response = await cartService.updateCart(productInfo, headers);
+      res.status(response.status).json(response.body);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+);
 cartRouter.post(
   "/api/profile/cart/checkout",
   async (req: Request, res: Response) => {
     try {
-      // const productInfo = req.body;
-      // const headers = req.headers;
-      // const body = await cartService.updateCart(productInfo, headers);
+      const headers = req.headers;
+      const body = await cartService.cartCheckout(headers);
 
-      res.status(200).json({ succesful: "yes" });
+      res.status(200).json(body);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal Server Error" });

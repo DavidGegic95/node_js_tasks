@@ -1,1 +1,30 @@
-[{"id":"","items":[]}]
+[
+  {
+    "id": "123",
+    "items": [
+      {
+        "product": {
+          "id": "5c293ad0-19d0-41ee-baa3-4c648f9f7697",
+          "title": "Book",
+          "description": "Interesting book",
+          "price": 200
+        },
+        "count": 1
+      }
+    ]
+  },
+  {
+    "id": "321",
+    "items": [
+      {
+        "product": {
+          "id": "5c293ad0-19d0-41ee-baa3-4c648f9f7697",
+          "title": "Book",
+          "description": "Interesting book",
+          "price": 200
+        },
+        "count": 5
+      }
+    ]
+  }
+]
