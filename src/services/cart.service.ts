@@ -15,16 +15,14 @@ const getCart = async (headers: any) => {
     };
     const createdCart = await cartRepository.createCart(cart);
   }
-  const total = getTotal(cart);
 
-  const cartBody = {
+  return {
     data: {
       cart: cart,
-      total: total,
+      total: getTotal(cart),
       error: null,
     },
   };
-  return cartBody;
 };
 
 const deleteById = async (headers: any) => {

@@ -5,6 +5,7 @@
   "main": "app.ts",
   "scripts": {
     "start": "nodemon src/server.ts",
+    "stop": "echo 'Stopping app...'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

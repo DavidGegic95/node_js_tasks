@@ -1,7 +1,7 @@
 import cartRouter from "./controllers/cart.controller";
 import { authMiddleware } from "./authMiddleware/authMiddleware";
 import productRouter from "./controllers/product.controller";
-const express = require("express");
+import express from "express";
 const PORT = 8000;
 const app = express();
 
