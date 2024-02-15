@@ -1,13 +1,31 @@
 import { productRepository } from "../repositories/product.repository";
+import { ProductModel } from "../models/product.model";
+import { Response } from "express";
 
-const getAllProducts = async (): Promise<Array<any>> => {
-  const products = await productRepository.getAll();
-  return products;
+const getAllProducts = async (res: Response) => {
+  try {
+    const products = await ProductModel.find();
+    return {
+      status: "success",
+      data: { products },
+    };
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 };
 
 const getProductbyId = async (productId: string) => {
-  const product = await productRepository.getById(productId);
-  return product;
+  try {
+    const product = await ProductModel.findById(productId);
+    return {
+      status: "success",
+      data: { product },
+    };
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 };
 
 export const productService = {

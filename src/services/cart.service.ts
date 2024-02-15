@@ -1,55 +1,129 @@
 import { cartRepository } from "../repositories/cart.repository";
 import { v4 as uuidv4 } from "uuid";
 import { CartType } from "../utils/types/cart.type";
-import { getTotal } from "../utils/heplers/getTotalPrice";
 import { cartCheckoutHelper } from "../utils/heplers/cartCheckout";
 import { responseBody } from "../utils/responseMessages/responses";
 
-const getCart = async (headers: any) => {
-  const userId = headers["x-user-id"];
-  let cart = await cartRepository.getCart(userId);
-  if (!cart) {
-    cart = {
-      id: userId,
-      items: [],
-    };
-    const createdCart = await cartRepository.createCart(cart);
+import { Response } from "express";
+import { ICart, ICartItem, CartModel } from "../models/cart.model";
+import { ProductModel } from "../models/product.model";
+import { getTotalPrice } from "../utils/heplers/getTotal";
+
+const getCart = async (userId: string, res: Response) => {
+  try {
+    let cart: ICart | null;
+
+    cart = await CartModel.findOne({ userId });
+    if (!cart) {
+      const newCart = new CartModel({
+        userId: userId,
+        isDeleted: false,
+        items: [],
+      });
+
+      await newCart.save();
+
+      return res.status(201).json({
+        status: "created",
+        data: { cart: newCart },
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: { cart },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: "Internal server error",
+    });
   }
-
-  return {
-    data: {
-      cart: cart,
-      total: getTotal(cart),
-      error: null,
-    },
-  };
 };
 
-const deleteById = async (headers: any) => {
-  const cartId = headers["x-user-id"];
-  let isDeleted = await cartRepository.deleteById(cartId);
+const deleteById = async (userId: string, res: Response) => {
+  try {
+    const emptyCart = await CartModel.findOneAndUpdate(
+      { userId },
+      { items: [] },
+      { new: true }
+    );
 
-  return responseBody(isDeleted, cartId);
+    if (emptyCart) {
+      res.status(200).json({
+        status: "success",
+        message: "User cart emptied",
+        data: { emptyCart },
+      });
+    } else {
+      res.status(404).json({
+        status: "error",
+        message: "User cart not found",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal server error",
+    });
+  }
 };
 
-const updateCart = async (productInfo: any, headers: any) => {
-  const body = await cartRepository.updateCart(productInfo, headers);
-  return body;
+const updateCart = async (userId: string, updatedItems: any, res: Response) => {
+  try {
+    const updatedCart = await CartModel.findOneAndUpdate(
+      { userId },
+      { items: updatedItems },
+      { new: true }
+    );
+    if (updatedCart) {
+      res.status(200).json({
+        status: "success",
+        message: "User cart updated",
+        data: { updatedCart },
+      });
+    } else {
+      res.status(404).json({
+        status: "error",
+        message: "User cart not found",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal server error",
+    });
+  }
 };
 
-const cartCheckout = async (headers: any) => {
-  const userId = headers["x-user-id"];
-  const cart = await cartRepository.getCart(userId);
-  if (cart) {
-    const body = cartCheckoutHelper(cart);
-    return body;
-  } else {
-    return {
-      data: null,
-      error: {
-        message: "Cart is empty",
-      },
+const cartCheckout = async (userId: string, res: Response, body: any) => {
+  try {
+    const cart = await CartModel.findOne({ userId });
+
+    if (!cart || cart.isDeleted) {
+      return res.status(404).send("Cart not found");
+    }
+    const totalPrice = await getTotalPrice(cart);
+    const order = {
+      userId,
+      items: cart.items,
+      payment: body.payment,
+      delivery: body.delivery,
+      comments: body.comments || "",
+      status: "created",
+      total: totalPrice,
     };
+    res.status(201).json({
+      status: "created",
+      data: { order },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: "Internal server error",
+    });
   }
 };
 

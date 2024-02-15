@@ -6,7 +6,7 @@ const productRouter = Router();
 
 productRouter.get("/api/products", async (req: Request, res: Response) => {
   try {
-    const products = await productService.getAll();
+    const products = await productService.getAll(res);
     res.status(200).json(products);
   } catch (error) {
     console.error(error);
