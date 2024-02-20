@@ -17,11 +17,9 @@ const getAllProducts = async (res: Response) => {
 
 const getProductbyId = async (productId: string) => {
   try {
-    const product = await ProductModel.findById(productId);
-    return {
-      status: "success",
-      data: { product },
-    };
+    const id = productId;
+    const product: any = await ProductModel.findOne({ id });
+    return product;
   } catch (error) {
     console.log(error);
     return null;

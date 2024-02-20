@@ -23,16 +23,16 @@ const getCart = async (userId: string, res: Response) => {
 
       await newCart.save();
 
-      return res.status(201).json({
+      res.status(201).json({
         status: "created",
         data: { cart: newCart },
       });
+    } else {
+      res.status(200).json({
+        status: "success",
+        data: { cart },
+      });
     }
-
-    res.status(200).json({
-      status: "success",
-      data: { cart },
-    });
   } catch (error) {
     res.status(500).json({
       status: "error",

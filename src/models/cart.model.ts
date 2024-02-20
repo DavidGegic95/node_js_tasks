@@ -18,11 +18,7 @@ const cartSchema = new mongoose.Schema({
   isDeleted: { type: Boolean, default: false },
   items: [
     {
-      product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-        required: true,
-      },
+      productId: { type: String, required: true },
       count: { type: Number, required: true },
     },
   ],
