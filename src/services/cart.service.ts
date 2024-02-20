@@ -83,7 +83,6 @@ const updateCart = async (userId: string, updatedItems: any, res: Response) => {
     if (updatedCart) {
       console.log(updatedCart, "pree");
       updatedItems._id = uuid();
-      // updatedCart.items = [updatedItems];
       console.log(updatedItems, "updatedItems");
       console.log(updatedCart, "upp cart");
 
@@ -115,17 +114,15 @@ const updateCart = async (userId: string, updatedItems: any, res: Response) => {
 
 const cartCheckout = async (userId: string, res: Response, body: any) => {
   try {
-    const connection = getConnection();
-    const cartRepository = connection.getRepository(Cart);
+    const dataSource = AppDataSource.manager;
+    const cartRepository = dataSource.getRepository(Cart);
 
     const cart = await cartRepository.findOne({ where: { userId } });
 
     if (!cart || cart.isDeleted) {
       return res.status(404).send("Cart not found");
     }
-
     const totalPrice = 0;
-
     const order = {
       userId,
       items: cart.items,
