@@ -1,27 +1,25 @@
-import { cartRepository } from "../repositories/cart.repository";
-import { v4 as uuidv4 } from "uuid";
-import { CartType } from "../utils/types/cart.type";
-import { cartCheckoutHelper } from "../utils/heplers/cartCheckout";
-import { responseBody } from "../utils/responseMessages/responses";
-
 import { Response } from "express";
-import { ICart, ICartItem, CartModel } from "../models/cart.model";
-import { ProductModel } from "../models/product.model";
-import { getTotalPrice } from "../utils/heplers/getTotal";
+import { getConnection } from "typeorm";
+import { v4 as uuid } from "uuid";
+import { AppDataSource } from "../data-source";
+import { Cart } from "../entity/Cart";
+// import { getTotalPrice } from "../utils/heplers/getTotal";
 
 const getCart = async (userId: string, res: Response) => {
   try {
-    let cart: ICart | null;
+    let cart: Cart | undefined;
+    const dataSource = AppDataSource.manager;
+    const cartRepository = dataSource.getRepository(Cart);
+    cart = await cartRepository.findOne({ where: { userId } });
 
-    cart = await CartModel.findOne({ userId });
     if (!cart) {
-      const newCart = new CartModel({
-        userId: userId,
-        isDeleted: false,
-        items: [],
-      });
-
-      await newCart.save();
+      const newCart = new Cart();
+      newCart.userId = userId;
+      newCart.isDeleted = false;
+      newCart.items = [];
+      await AppDataSource.manager.save(
+        AppDataSource.manager.create(Cart, newCart)
+      );
 
       return res.status(201).json({
         status: "created",
@@ -34,6 +32,7 @@ const getCart = async (userId: string, res: Response) => {
       data: { cart },
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       status: "error",
       message: "Internal server error",
@@ -43,13 +42,18 @@ const getCart = async (userId: string, res: Response) => {
 
 const deleteById = async (userId: string, res: Response) => {
   try {
-    const emptyCart = await CartModel.findOneAndUpdate(
-      { userId },
-      { items: [] },
-      { new: true }
-    );
+    const dataSource = AppDataSource.manager;
+    const cartRepository = dataSource.getRepository(Cart);
 
+    const emptyCart = await cartRepository.findOneBy({ userId: userId });
     if (emptyCart) {
+      emptyCart.items = [];
+      await cartRepository
+        .createQueryBuilder()
+        .update(Cart)
+        .set(emptyCart)
+        .where("userId = :userId", { userId: userId })
+        .execute();
       res.status(200).json({
         status: "success",
         message: "User cart emptied",
@@ -72,12 +76,23 @@ const deleteById = async (userId: string, res: Response) => {
 
 const updateCart = async (userId: string, updatedItems: any, res: Response) => {
   try {
-    const updatedCart = await CartModel.findOneAndUpdate(
-      { userId },
-      { items: updatedItems },
-      { new: true }
-    );
+    const dataSource = AppDataSource.manager;
+    const cartRepository = dataSource.getRepository(Cart);
+
+    const updatedCart = await cartRepository.findOne({ where: { userId } });
     if (updatedCart) {
+      console.log(updatedCart, "pree");
+      updatedItems._id = uuid();
+      // updatedCart.items = [updatedItems];
+      console.log(updatedItems, "updatedItems");
+      console.log(updatedCart, "upp cart");
+
+      await cartRepository
+        .createQueryBuilder()
+        .update(Cart)
+        .set(updatedCart)
+        .where("userId = :userId", { userId: userId })
+        .execute();
       res.status(200).json({
         status: "success",
         message: "User cart updated",
@@ -100,12 +115,17 @@ const updateCart = async (userId: string, updatedItems: any, res: Response) => {
 
 const cartCheckout = async (userId: string, res: Response, body: any) => {
   try {
-    const cart = await CartModel.findOne({ userId });
+    const connection = getConnection();
+    const cartRepository = connection.getRepository(Cart);
+
+    const cart = await cartRepository.findOne({ where: { userId } });
 
     if (!cart || cart.isDeleted) {
       return res.status(404).send("Cart not found");
     }
-    const totalPrice = await getTotalPrice(cart);
+
+    const totalPrice = 0;
+
     const order = {
       userId,
       items: cart.items,
@@ -115,11 +135,13 @@ const cartCheckout = async (userId: string, res: Response, body: any) => {
       status: "created",
       total: totalPrice,
     };
+
     res.status(201).json({
       status: "created",
       data: { order },
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       status: "error",
       message: "Internal server error",

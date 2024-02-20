@@ -1,10 +1,12 @@
-import { productRepository } from "../repositories/product.repository";
-import { ProductModel } from "../models/product.model";
+import { Product } from "../entity/Product";
 import { Response } from "express";
+import { AppDataSource } from "../data-source";
 
 const getAllProducts = async (res: Response) => {
   try {
-    const products = await ProductModel.find();
+    const dataSource = AppDataSource.manager;
+    const productRepository = dataSource.getRepository(Product);
+    const products = await productRepository.find();
     return {
       status: "success",
       data: { products },
@@ -15,20 +17,24 @@ const getAllProducts = async (res: Response) => {
   }
 };
 
-const getProductbyId = async (productId: string) => {
+const getProductById = async (productId: string) => {
   try {
-    const product = await ProductModel.findById(productId);
+    const dataSource = AppDataSource.manager;
+    const productRepository = dataSource.getRepository(Product);
+    const product = await productRepository.findOne({
+      where: { id: productId },
+    });
     return {
       status: "success",
       data: { product },
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return null;
   }
 };
 
 export const productService = {
   getAll: getAllProducts,
-  getById: getProductbyId,
+  getById: getProductById,
 };
