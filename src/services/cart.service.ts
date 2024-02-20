@@ -1,5 +1,4 @@
 import { Response } from "express";
-import { getConnection } from "typeorm";
 import { v4 as uuid } from "uuid";
 import { AppDataSource } from "../data-source";
 import { Cart } from "../entity/Cart";
@@ -81,17 +80,14 @@ const updateCart = async (userId: string, updatedItems: any, res: Response) => {
 
     const updatedCart = await cartRepository.findOne({ where: { userId } });
     if (updatedCart) {
-      console.log(updatedCart, "pree");
-      updatedItems._id = uuid();
-      console.log(updatedItems, "updatedItems");
-      console.log(updatedCart, "upp cart");
+      updatedCart.items = [];
 
-      await cartRepository
-        .createQueryBuilder()
-        .update(Cart)
-        .set(updatedCart)
-        .where("userId = :userId", { userId: userId })
-        .execute();
+      await cartRepository.save(updatedCart);
+      // .createQueryBuilder()
+      // .update(Cart)
+      // .set(updatedCart)
+      // .where("userId = userId", { userId: userId })
+      // .execute();
       res.status(200).json({
         status: "success",
         message: "User cart updated",
