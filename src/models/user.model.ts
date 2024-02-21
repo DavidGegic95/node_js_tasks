@@ -1,17 +1,19 @@
 import { Schema, model } from "mongoose";
 import { v4 as uuid } from "uuid";
-export interface IUser {
-  _id: String;
-  email?: String;
-  password?: String;
-  role?: String;
+
+interface IUser {
+  id: string;
+  email: string;
+  password: string;
+  role: string;
 }
 
-const userSchema = new Schema({
-  _id: { type: String, default: () => uuid() },
-  email: String,
-  password: String,
-  role: String,
+export const UserSchema = new Schema<IUser>({
+  id: { type: String, default: () => uuid() },
+  email: { type: String, unique: true },
+  password: { type: String },
+  role: { type: String },
 });
 
-export const UserModel = model<IUser>("User", userSchema);
+const User = model("user", UserSchema);
+export default User;
