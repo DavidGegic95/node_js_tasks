@@ -15,13 +15,8 @@ cartRouter.delete(
   "/api/profile/cart",
   isAdmin,
   async (req: Request, res: Response) => {
-    try {
-      const userId = req.headers["x-user-id"] as string;
-      await cartService.deleteById(userId, res);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
+    const userId = req.headers["x-user-id"] as string;
+    await cartService.deleteById(userId, res);
   }
 );
 
@@ -29,26 +24,16 @@ cartRouter.put(
   "/api/profile/cart",
   validateRequestBody,
   async (req: Request, res: Response) => {
-    try {
-      const productInfo = req.body;
-      const userId = req.headers["x-user-id"] as string;
-      await cartService.updateCart(userId, productInfo, res);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
+    const productInfo = req.body;
+    const userId = req.headers["x-user-id"] as string;
+    await cartService.updateCart(userId, productInfo, res);
   }
 );
 cartRouter.post(
   "/api/profile/cart/checkout",
-  async (req: Request, res: Response, body: any) => {
-    try {
-      const userId = req.headers["x-user-id"] as string;
-      await cartService.cartCheckout(userId, res, req.body);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
+  async (req: Request, res: Response) => {
+    const userId = req.headers["x-user-id"] as string;
+    await cartService.cartCheckout(userId, res, req.body);
   }
 );
 

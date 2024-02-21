@@ -1,5 +1,4 @@
 import cartRouter from "./controllers/cart.controller";
-// import { authMiddleware } from "./authMiddleware/authMiddleware";
 import userRouter from "./controllers/user.controller";
 import productRouter from "./controllers/product.controller";
 import express from "express";
