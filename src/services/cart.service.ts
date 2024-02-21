@@ -1,12 +1,5 @@
-import { cartRepository } from "../repositories/cart.repository";
-import { v4 as uuidv4 } from "uuid";
-import { CartType } from "../utils/types/cart.type";
-import { cartCheckoutHelper } from "../utils/heplers/cartCheckout";
-import { responseBody } from "../utils/responseMessages/responses";
-
 import { Response } from "express";
-import { ICart, ICartItem, CartModel } from "../models/cart.model";
-import { ProductModel } from "../models/product.model";
+import { ICart, CartModel } from "../models/cart.model";
 import { getTotalPrice } from "../utils/heplers/getTotal";
 
 const getCart = async (userId: string, res: Response) => {

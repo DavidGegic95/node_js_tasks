@@ -1,4 +1,3 @@
-import { productRepository } from "../repositories/product.repository";
 import { ProductModel } from "../models/product.model";
 import { Response } from "express";
 
