@@ -8,7 +8,8 @@ const cartRouter = Router();
 
 cartRouter.get("/api/profile/cart", async (req: Request, res: Response) => {
   const userId = req.headers["x-user-id"] as string;
-  await cartService.getCart(userId, res);
+    await cartService.getCart(userId, res);
+
 });
 
 cartRouter.delete(

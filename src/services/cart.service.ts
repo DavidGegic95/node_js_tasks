@@ -4,6 +4,13 @@ import { getTotalPrice } from "../utils/heplers/getTotal";
 
 const getCart = async (userId: string, res: Response) => {
   try {
+    if (!userId) {
+      return res.status(401).json({
+        status: "error",
+        message: "User id is required",
+      });
+    }
+    
     let cart: ICart | null;
 
     cart = await CartModel.findOne({ userId });
